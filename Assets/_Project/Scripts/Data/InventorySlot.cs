@@ -1,10 +1,13 @@
 using System;
 
 [Serializable] 
+/// <summary>
+/// Spaces for items in the inventory
+/// </summary>
 public class InventorySlot
 {
     public ItemData item; // Object inside the Slot
-    public int stackSize; // Stack size
+    public int stackSize;
 
     public InventorySlot(ItemData item, int amount) // Slot constructor 
     {
@@ -17,8 +20,9 @@ public class InventorySlot
         stackSize += amount;
     }
 
-    public void RemoveStack(int amount) // Remove from stack
+    public void RemoveStack(int amount) 
     {
+        // Reduces amount; clears slot if empty
         stackSize -= amount;
         if (stackSize <= 0) Clear();
     }

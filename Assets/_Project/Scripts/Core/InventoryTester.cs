@@ -3,7 +3,6 @@ using UnityEngine;
 public class InventoryTester : MonoBehaviour
 {
     [Header("References")]
-    // Reference to your Manager
     public InventoryManager manager; 
 
     [Header("Test Data")]
@@ -12,6 +11,7 @@ public class InventoryTester : MonoBehaviour
 
     void Update()
     {
+        // Debug Input: Press Space to test adding an item
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (manager != null && itemToAdd != null)

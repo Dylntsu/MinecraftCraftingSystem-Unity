@@ -4,14 +4,16 @@ public class InventoryManager : MonoBehaviour
 {
     public int slotNumber = 36;
     public InventorySlot[] inventory;
-
+    
+    public InventoryUI inventoryUI;
+    
     private void Awake()
     {
-
         inventory = new InventorySlot[slotNumber];
         for (int i = 0; i < slotNumber; i++)
         {
-            inventory[i] = new InventorySlot(null, 0);
+
+            inventory[i] = new InventorySlot(null, 0); 
         }
     }
 
@@ -25,6 +27,9 @@ public class InventoryManager : MonoBehaviour
                 if (slot.item == item && slot.stackSize < item.maxStackSize)
                 {
                     slot.AddStack(amount);
+                    
+                    if (inventoryUI != null) inventoryUI.UpdateUI();
+                    
                     return true; 
                 }
             }
@@ -36,12 +41,14 @@ public class InventoryManager : MonoBehaviour
             {
                 inventory[i].item = item;
                 inventory[i].stackSize = amount;
+                
+                if (inventoryUI != null) inventoryUI.UpdateUI();
+                
                 return true; 
             }
         }
 
         Debug.Log("Full inventory");
         return false;
-
     } 
 }
