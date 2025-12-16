@@ -19,15 +19,21 @@ public class InventorySlot
     {
         stackSize += amount;
     }
+    
+    public void UpdateSlot(ItemData data, int amount)
+    {
+        item = data;
+        stackSize = amount;
+    }
 
     public void RemoveStack(int amount) 
     {
         // Reduces amount; clears slot if empty
         stackSize -= amount;
-        if (stackSize <= 0) Clear();
+        if (stackSize <= 0) ClearSlot();
     }
 
-    public void Clear() // Clear
+    public void ClearSlot() 
     {
         item = null;
         stackSize = 0;

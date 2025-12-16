@@ -4,6 +4,7 @@ public class InventoryTester : MonoBehaviour
 {
     [Header("References")]
     public InventoryManager manager; 
+    public CraftingGridManager gridManager; 
 
     [Header("Test Data")]
     public ItemData itemToAdd; 
@@ -31,6 +32,13 @@ public class InventoryTester : MonoBehaviour
             else
             {
                 Debug.LogError("Manager or Item not assigned in the Inspector.");
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if  (gridManager != null){
+                gridManager.UpdateCraftingResult();
             }
         }
     }
