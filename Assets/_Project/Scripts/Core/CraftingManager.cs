@@ -81,4 +81,36 @@ public class CraftingManager : MonoBehaviour
 
         return null; // If the loop ends, no recipe was found.
     }
+
+    public void CheckForRecipes()
+    {
+        // Find all slots inside the "InputGrid" object
+        SlotUI[] inputSlots = GameObject.Find("InputGrid").GetComponentsInChildren<SlotUI>();
+        List<RequiredItem> currentInput = new List<RequiredItem>();
+
+        foreach (SlotUI slot in inputSlots)
+        {
+            if (slot.assignedSlot.item != null)
+            {
+                currentInput.Add(new RequiredItem {
+                    itemData = slot.assignedSlot.item,
+                    amount = slot.assignedSlot.stackSize
+                });
+            }
+        }
+
+        CraftingRecipe match = FindMatchingRecipe(currentInput);
+
+        // Update the OutputSlot
+        SlotUI outputSlot = GameObject.Find("OutputSlot").GetComponent<SlotUI>();
+        if (match != null)
+        {
+            outputSlot.assignedSlot.UpdateSlot(match.resultItem, match.resultAmount);
+        }
+        else
+        {
+            outputSlot.assignedSlot.ClearSlot();
+        }
+        outputSlot.UpdateSlotUI();
+    }
 }

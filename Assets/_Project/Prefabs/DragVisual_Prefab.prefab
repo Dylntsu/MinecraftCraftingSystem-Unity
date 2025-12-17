@@ -223,6 +223,7 @@ GameObject:
   - component: {fileID: 4916371699394167666}
   - component: {fileID: 4115049468540118276}
   - component: {fileID: 8855076075152107323}
+  - component: {fileID: 8628524497117985182}
   m_Layer: 5
   m_Name: DragVisual_Prefab
   m_TagString: Untagged
@@ -273,3 +274,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DragVisual
   icon: {fileID: 3815134644062776997}
   countText: {fileID: 7764556608757336342}
+--- !u!225 &8628524497117985182
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6317145571351547075}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

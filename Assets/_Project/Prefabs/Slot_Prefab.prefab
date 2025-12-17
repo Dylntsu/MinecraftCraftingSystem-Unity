@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9078869892364552302}
   - component: {fileID: 4036792564887735501}
   - component: {fileID: 5352626745344379557}
-  - component: {fileID: 1533517529514578193}
+  - component: {fileID: -7887308734518811889}
   m_Layer: 5
   m_Name: Slot_Prefab
   m_TagString: Untagged
@@ -141,7 +141,7 @@ MonoBehaviour:
   assignedSlot:
     item: {fileID: 0}
     stackSize: 0
---- !u!114 &1533517529514578193
+--- !u!114 &-7887308734518811889
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,9 +150,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1509443953919406619}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27ba3e1dc37e5c54b84a84d70665043b, type: 3}
+  m_Script: {fileID: 11500000, guid: 9549acb8e4c11f34fb7b5f2d0c34fd6a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DragItemHandler
+  m_EditorClassIdentifier: Assembly-CSharp::SlotInteraction
 --- !u!1 &2802531167393351733
 GameObject:
   m_ObjectHideFlags: 0

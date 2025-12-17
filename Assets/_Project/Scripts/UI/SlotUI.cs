@@ -1,32 +1,33 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; 
-using System;
-
+using TMPro;
 
 public class SlotUI : MonoBehaviour
 {
-    [Header("UI References")]
+    [Header("UI Components")]
     public Image itemIcon;
     public TextMeshProUGUI itemAmountText;
     
     [HideInInspector] 
     public InventorySlot assignedSlot;
 
+    // Handles only the visual representation of the slot
     public void UpdateSlotUI()
     {
-        // Updates icon and text visibility based on item data
-        if (assignedSlot.item == null)
-        {
-            itemIcon.gameObject.SetActive(false);
-            itemAmountText.text = "";
-        }
-        else
+        if (assignedSlot == null) return;
+
+
+        bool hasItem = assignedSlot.item != null;
+        itemIcon.gameObject.SetActive(hasItem);
+
+        if (hasItem)
         {
             itemIcon.sprite = assignedSlot.item.icon;
-            itemAmountText.text = assignedSlot.stackSize.ToString();
-            // Show icon
-            itemIcon.gameObject.SetActive(true);
+            itemAmountText.text = assignedSlot.stackSize > 1 ? assignedSlot.stackSize.ToString() : "";
+        }
+        else 
+        { 
+            itemAmountText.text = ""; 
         }
     }
 }
