@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8c973a916c94db40a0053525dc1348d, type: 3}
   m_Name: Recipe_LogToPlanks
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
-  requiredItems:
+  isShapeless: 1
+  shapelessIngredients:
   - itemData: {fileID: 11400000, guid: b9e72c085294e6a43a44b11ba5d1b626, type: 2}
     amount: 1
+  shapedGrid: []
   resultItem: {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
   resultAmount: 4

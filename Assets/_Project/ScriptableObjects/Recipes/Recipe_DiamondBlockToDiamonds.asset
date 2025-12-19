@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8c973a916c94db40a0053525dc1348d, type: 3}
   m_Name: Recipe_DiamondBlockToDiamonds
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
-  requiredItems:
+  isShapeless: 0
+  shapelessIngredients:
   - itemData: {fileID: 11400000, guid: dc47cbc259b4779439498de833f94176, type: 2}
     amount: 1
+  shapedGrid:
+  - {fileID: 0}
   resultItem: {fileID: 11400000, guid: e83ace8bb23d87444ab0ebef8ea50cc3, type: 2}
   resultAmount: 9

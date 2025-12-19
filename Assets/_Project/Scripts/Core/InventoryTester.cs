@@ -35,10 +35,19 @@ public class InventoryTester : MonoBehaviour
             }
         }
 
+        // Debug Input: Press T to force check recipes
         if (Input.GetKeyDown(KeyCode.T))
         {
-            if  (gridManager != null){
-                gridManager.UpdateCraftingResult();
+            var cm = FindFirstObjectByType<CraftingManager>();
+            
+            if (cm != null)
+            {
+                cm.CheckForRecipes();
+                Debug.Log("Manual Recipe Check Triggered via 'T'.");
+            }
+            else
+            {
+                Debug.LogWarning("No CraftingManager found in the scene.");
             }
         }
     }

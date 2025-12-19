@@ -12,8 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8c973a916c94db40a0053525dc1348d, type: 3}
   m_Name: Recipe_PlanksToStick
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
-  requiredItems:
-  - itemData: {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
-    amount: 2
+  isShapeless: 0
+  shapelessIngredients: []
+  shapedGrid:
+  - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   resultItem: {fileID: 11400000, guid: 0dcfb5b9c5fa49640bd5d94f73cf02af, type: 2}
   resultAmount: 4
