@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-// Añadimos IPointerEnterHandler para detectar cuando el mouse entra mientras arrastramos
 public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IDropHandler, IPointerEnterHandler
 {
     protected SlotUI ui;
@@ -11,7 +10,7 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
-        // --- NUEVO: SHIFT + CLICK ---
+        // --- SHIFT + CLICK ---
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
             HandleShiftClick();
@@ -27,10 +26,10 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
     }
 
-    // --- NUEVO: DRAG PAINTING (IPointerEnterHandler) ---
+    // DRAG PAINTING (IPointerEnterHandler)
     public virtual void OnPointerEnter(PointerEventData eventData)
     {
-        // Si el botón izquierdo está presionado y tenemos algo en la mano
+        // If the left mouse button is pressed and we have something in our hand
         if (Input.GetMouseButton(0) && DragManager.Instance.currentDragData.IsHoldingItem)
         {
             HandleDragPainting();
@@ -42,7 +41,7 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         var drag = DragManager.Instance.currentDragData;
         var slot = ui.assignedSlot;
 
-        // Solo "pintamos" si el slot está vacío o tiene el mismo item y hay espacio
+        // only paint if the slot is empty or has the same item and there is space
         if (slot.item == null || (slot.item == drag.item && slot.stackSize < slot.item.maxStackSize))
         {
             if (drag.amount > 0)
@@ -52,9 +51,9 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
                 drag.amount -= 1;
 
-                // Si se acaba el stack en la mano, terminamos el drag
+                // If we run out of items in the hand, end the drag
                 if (drag.amount <= 0) DragManager.Instance.EndDrag();
-                else DragManager.Instance.UpdateDragVisual(); // Actualiza el número en el cursor
+                else DragManager.Instance.UpdateDragVisual(); // Update the number in the cursor
 
                 ui.UpdateSlotUI();
                 NotifyCrafting();
@@ -62,24 +61,72 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
     }
 
-    protected virtual void HandleShiftClick()
+        protected virtual void HandleShiftClick()
     {
         var slot = ui.assignedSlot;
         if (slot == null || slot.item == null) return;
 
         var invManager = Object.FindFirstObjectByType<InventoryManager>();
-        if (invManager != null)
+        var gridManager = Object.FindFirstObjectByType<CraftingGridManager>();
+
+        // if there is no crafting table visible, do nothing
+        bool isCraftingActive = gridManager != null && gridManager.gameObject.activeInHierarchy;
+        if (!isCraftingActive) return;
+
+        bool isInCraftingGrid = gridManager.GetGridSlots().Contains(ui);
+
+        if (isInCraftingGrid)
         {
-            // try to add the stack to the inventory
-            int initialAmount = slot.stackSize;
-            if (invManager.AddItem(slot.item, initialAmount))
+            // CASE A: From Crafting Table -> Inventory
+            // AddItem generalmente devuelve el sobrante, se asume que si devuelve true, entró todo.
+            if (invManager.AddItem(slot.item, slot.stackSize))
             {
                 slot.ClearSlot();
-                ui.UpdateSlotUI();
-                NotifyCrafting();
-                Debug.Log("Shift-Click: Item movido rápidamente.");
             }
         }
+        else
+        {
+            // CASE B: From Inventory -> Crafting Table
+            foreach (var gridSlotUI in gridManager.GetGridSlots())
+            {
+                var gridSlot = gridSlotUI.assignedSlot;
+                
+                // Check if the slot is empty or has the same item and there is space
+                if (gridSlot.item == null || (gridSlot.item == slot.item && gridSlot.stackSize < gridSlot.item.maxStackSize))
+                {
+                    // Calculate how much we can move really
+                    int maxStack = slot.item.maxStackSize;
+                    int currentStack = gridSlot.item != null ? gridSlot.stackSize : 0;
+                    int spaceLeft = maxStack - currentStack;
+                    
+                    int amountToMove = Mathf.Min(slot.stackSize, spaceLeft);
+
+                    if (amountToMove > 0)
+                    {
+                        // Add to destination
+                        if (gridSlot.item == null) gridSlot.UpdateSlot(slot.item, amountToMove);
+                        else gridSlot.AddStack(amountToMove);
+
+                        // Remove from origin
+                        slot.RemoveStack(amountToMove); // Use RemoveStack instead of ClearSlot for safety
+
+                        // Update the destination slot UI
+                        gridSlotUI.UpdateSlotUI(); 
+                        
+                        // If we empty the origin slot, break the loop
+                        if (slot.stackSize <= 0)
+                        {
+                            slot.ClearSlot();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Update the slot UI where we clicked
+        ui.UpdateSlotUI();
+        NotifyCrafting();
     }
 
     public virtual void OnPointerUp(PointerEventData eventData)
