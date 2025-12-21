@@ -83,4 +83,13 @@ public class DragManager : MonoBehaviour
         currentDragData.Clear();
         if (visualInstance != null) visualInstance.HideVisual();
     }
+
+    public void UpdateDragVisual()
+    {
+        if (currentDragData.IsHoldingItem && visualInstance != null)
+        {
+            // Refrescamos el icono y la cantidad actual en el cursor
+            visualInstance.SetVisualData(currentDragData.item.icon, currentDragData.amount);
+        }
+    }
 }
