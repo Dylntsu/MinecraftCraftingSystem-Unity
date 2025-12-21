@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8c973a916c94db40a0053525dc1348d, type: 3}
-  m_Name: Recipe_CraftingTable
+  m_Name: Recipe_Shield
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
   isShapeless: 0
   shapelessIngredients: []
   shapedGrid:
   - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
+  - {fileID: 11400000, guid: 8038c33a317466244869239ef48fdd5f, type: 2}
+  - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
+  - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
+  - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
   - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
   - {fileID: 0}
   - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
-  - {fileID: 11400000, guid: d13791e0e03ea2245a8b0367f42e560b, type: 2}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  resultItem: {fileID: 11400000, guid: 768ffa598e549874fa228f8f64062156, type: 2}
+  resultItem: {fileID: 11400000, guid: 2ed93705e4b23c74eafed153af008fcd, type: 2}
   resultAmount: 1

@@ -582,7 +582,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryTester
   manager: {fileID: 715449079}
   gridManager: {fileID: 715449082}
-  itemToAdd: {fileID: 11400000, guid: b9e72c085294e6a43a44b11ba5d1b626, type: 2}
+  itemToAdd: {fileID: 11400000, guid: d776cc3bb871b54479e41b8f42f91791, type: 2}
   amount: 1
 --- !u!114 &715449079
 MonoBehaviour:
@@ -634,6 +634,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5c4e82646bacfe348b0d056d6515e126, type: 2}
   - {fileID: 11400000, guid: bba9418413b33664980b96727b0687a2, type: 2}
   - {fileID: 11400000, guid: 5a336f17c62503d41ad01de5ad4bcb8c, type: 2}
+  - {fileID: 11400000, guid: 9a44fbdc62664b84387ab2c772820b1f, type: 2}
+  - {fileID: 11400000, guid: 66a85f409e066c74e878164ee5edb35e, type: 2}
 --- !u!114 &715449082
 MonoBehaviour:
   m_ObjectHideFlags: 0
