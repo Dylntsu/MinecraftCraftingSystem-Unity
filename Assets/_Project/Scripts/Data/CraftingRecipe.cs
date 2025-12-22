@@ -4,16 +4,16 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "New Recipe", menuName = "MinecraftSystem/Crafting Recipe")]
 public class CraftingRecipe : ScriptableObject
 {
-    [Header("Configuración")]
-    public bool isShapeless = false; // Define si importa el orden o no
+    [Header("Configuration")]
+    public bool isShapeless = false; // Defines if order matters or not
 
-    [Header("Ingredientes (Solo si es Shapeless)")]
+    [Header("Ingredients (Only if Shapeless)")]
     public List<RequiredItem> shapelessIngredients = new List<RequiredItem>();
 
-    [Header("Grid 3x3 (Solo si NO es Shapeless)")]
+    [Header("3x3 Grid (Only if NOT Shapeless)")]
     public List<ItemData> shapedGrid = new List<ItemData>(9); 
 
-    [Header("Resultado")]
+    [Header("Result")]
     public ItemData resultItem;
     public int resultAmount = 1;
 

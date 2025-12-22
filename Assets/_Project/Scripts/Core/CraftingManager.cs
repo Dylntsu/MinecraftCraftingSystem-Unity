@@ -79,20 +79,20 @@ public class CraftingManager : MonoBehaviour
         RectInt tableBounds = GetGridBounds(tableGrid);
         RectInt recipeBounds = GetGridBounds(recipeGrid);
 
-        //verification of the same size
+                // Verification of the same size
         if (tableBounds.width != recipeBounds.width || tableBounds.height != recipeBounds.height)
         {
             return false;
         }
-        //Comparation item by item
+        // Comparison item by item
         for (int x = 0; x < tableBounds.width; x++)
         {
             for (int y = 0; y < tableBounds.height; y++)
             {
-                // Obtenemos el item de la mesa en su posición relativa (offset)
+                // We get the item from the table at its relative position (offset)
                 ItemData tableItem = tableGrid[tableBounds.x + x, tableBounds.y + y];
                 
-                // Obtenemos el item de la receta en su posición relativa
+                // We get the item from the recipe at its relative position
                 ItemData recipeItem = recipeGrid[recipeBounds.x + x, recipeBounds.y + y];
 
                 if (tableItem != recipeItem) return false;
@@ -102,7 +102,7 @@ public class CraftingManager : MonoBehaviour
         return true;
     }
 
-    // Función auxiliar matemática para encontrar el rectángulo ocupado
+    // Mathematical helper function to find the occupied rectangle
     private RectInt GetGridBounds(ItemData[,] grid)
     {
         int minX = 3, maxX = -1;
@@ -122,15 +122,15 @@ public class CraftingManager : MonoBehaviour
             }
         }
 
-        // Si la grilla está vacía, retornamos 0
+        // If the grid is empty, we return 0
         if (maxX == -1) return new RectInt(0, 0, 0, 0);
 
-        // Retornamos el rectángulo (x, y, ancho, alto)
-        // El +1 en ancho/alto es porque si va de 0 a 0, el tamaño es 1.
+        // We return the rectangle (x, y, width, height)
+        // The +1 in width/height is because if it goes from 0 to 0, the size is 1.
         return new RectInt(minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
     }
 
-    // --- LÓGICA SHAPELESS 
+    // --- SHAPELESS LOGIC 
     private bool CheckShapelessRecipe(CraftingRecipe recipe, List<SlotUI> gridSlots)
     {
         Dictionary<ItemData, int> tableContents = new Dictionary<ItemData, int>();
@@ -169,7 +169,7 @@ public class CraftingManager : MonoBehaviour
 
         if (currentActiveRecipe.isShapeless)
         {
-            // CONSUMO SHAPELESS
+            // SHAPELESS CONSUMPTION
             foreach (var required in currentActiveRecipe.shapelessIngredients)
             {
                 int remainingToRemove = required.amount * times;
@@ -188,7 +188,7 @@ public class CraftingManager : MonoBehaviour
         }
         else
         {
-            //receta con forma, cualquier item presente en la mesa DEBE ser consumido.
+            // shaped recipe any item present on the table MUST be consumed.
             foreach (var slot in gridSlots)
             {
                 if (slot.assignedSlot.item != null)
@@ -217,5 +217,35 @@ public class CraftingManager : MonoBehaviour
             
             outputSlotUI.UpdateSlotUI();
         }
+    }
+
+    public int GetMaxCraftableAmount()
+    {
+        if (currentActiveRecipe == null) return 0;
+
+        var gridSlots = FindFirstObjectByType<CraftingGridManager>().GetGridSlots();
+        int minStack = int.MaxValue;
+        bool foundAnyMaterial = false;
+
+        // Iterate through all grid slots
+        foreach (var slotUI in gridSlots)
+        {
+            var slot = slotUI.assignedSlot;
+            
+            // If the slot has an item, that item is a potential "limiter"
+            if (slot.item != null)
+            {
+                foundAnyMaterial = true;
+                if (slot.stackSize < minStack)
+                {
+                    minStack = slot.stackSize;
+                }
+            }
+        }
+
+        // If we don't find materials return 0
+        if (!foundAnyMaterial) return 0;
+
+        return minStack;
     }
 }

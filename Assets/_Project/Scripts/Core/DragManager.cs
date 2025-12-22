@@ -88,7 +88,7 @@ public class DragManager : MonoBehaviour
     {
         if (currentDragData.IsHoldingItem && visualInstance != null)
         {
-            // Refrescamos el icono y la cantidad actual en el cursor
+            // Refresh the icon and current amount on the cursor
             visualInstance.SetVisualData(currentDragData.item.icon, currentDragData.amount);
         }
     }

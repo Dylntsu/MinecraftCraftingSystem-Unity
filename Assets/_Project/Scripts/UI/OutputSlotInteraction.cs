@@ -3,50 +3,89 @@ using UnityEngine.EventSystems;
 
 public class OutputSlotInteraction : SlotInteraction
 {
+    private CraftingManager craftingManager;
+
+    private void Start()
+    {
+        craftingManager = FindFirstObjectByType<CraftingManager>();
+    }
+
+    // We override the normal click to prevent the player from placing items here
     public override void OnPointerDown(PointerEventData eventData)
     {
-        if (ui.assignedSlot == null || ui.assignedSlot.item == null) return;
+        if (ui.assignedSlot.item == null) return;
 
-        bool isHandEmpty = !DragManager.Instance.currentDragData.IsHoldingItem;
-        bool isSameItem = DragManager.Instance.currentDragData.item == ui.assignedSlot.item;
-
-        // Allow click if hand is empty OR if we are carrying the same item (stacking)
-        if (isHandEmpty || isSameItem)
+        // 1. SHIFT + CLICK LOGIC (CRAFT ALL)
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
-            HandlePickUp(eventData);
-            lastPickUpTime = Time.time;
+            HandleShiftClick(); // We use our override version below
         }
-    }
-
-    public override void OnDrop(PointerEventData eventData) { return; }
-    public override void OnPointerUp(PointerEventData eventData) { return; }
-
-   // Implements the consumption and stacking logic
-    protected override void HandlePickUp(PointerEventData eventData)
-    {
-        var slot = ui.assignedSlot;
-        var cm = Object.FindFirstObjectByType<CraftingManager>();
-        var dragData = DragManager.Instance.currentDragData;
-
-        // CASE A: Empty Hand -> Pick up new
-        if (!dragData.IsHoldingItem)
+        // 2. NORMAL CLICK LOGIC (Single craft)
+        else
         {
-            DragManager.Instance.StartDrag(slot.item, slot.stackSize, ui);
-            if (cm != null) cm.ConsumeIngredients(1);
-            slot.ClearSlot();
-        }
-        // CASE B: Same Item -> Add to stack
-        else if (dragData.item == slot.item)
-        {
-            if (slot.item.isStackable)
+            // We only allow taking items, not putting them.
+            // And only if the hand is empty or has the same stackable item.
+            if (!DragManager.Instance.currentDragData.IsHoldingItem || 
+               (DragManager.Instance.currentDragData.item == ui.assignedSlot.item))
             {
-                DragManager.Instance.AddDragStack(slot.stackSize);
-                if (cm != null) cm.ConsumeIngredients(1);
-                slot.ClearSlot();
+                // We execute the base pickup logic (HandlePickUp)
+                base.OnPointerDown(eventData);
+                
+                // And we consume 1 set of ingredients
+                craftingManager.ConsumeIngredients(1);
             }
         }
-        
-        ui.UpdateSlotUI();
-        NotifyCrafting();
     }
+
+    // We override the Shift-Click logic specifically for the OUTPUT
+    protected override void HandleShiftClick()
+    {
+        if (ui.assignedSlot.item == null) return;
+
+        InventoryManager invManager = FindFirstObjectByType<InventoryManager>();
+        
+        // A. Calculate the theoretical maximum based on ingredients (e.g. I have wood for 20 sticks)
+        int maxCrafts = craftingManager.GetMaxCraftableAmount();
+        
+        // B. Result Data
+        ItemData resultItem = ui.assignedSlot.item;
+        int amountPerCraft = ui.assignedSlot.stackSize; // Ex: Torches give 4 per craft
+
+        int totalCraftedCount = 0;
+
+        // C. Safe crafting loop
+        // We try to craft 1 by 1 (logically) until reaching the maximum or filling the inventory.
+        for (int i = 0; i < maxCrafts; i++)
+        {
+            // We try to add THE RESULT of 1 craft to the inventory
+            if (invManager.AddItem(resultItem, amountPerCraft))
+            {
+                // If it fit in the inventory, we increase the success counter
+                totalCraftedCount++;
+            }
+            else
+            {
+                // If AddItem returns false, the inventory is full.
+                // STOP IMMEDIATELY to avoid wasting materials.
+                break;
+            }
+        }
+
+        // D. Massive consumption of ingredients
+        if (totalCraftedCount > 0)
+        {
+            craftingManager.ConsumeIngredients(totalCraftedCount);
+            
+            // Visual and sound effect (optional for the future)
+            Debug.Log($"Craft-All! {totalCraftedCount} recipe times were crafted.");
+        }
+
+        // E. We visually clear the output slot (it will refill only if materials remain)
+        ui.UpdateSlotUI();
+        craftingManager.CheckForRecipes();
+    }
+
+    // Lock Drop and Drag Painting in the output
+    public override void OnDrop(PointerEventData eventData) { }
+    public override void OnPointerEnter(PointerEventData eventData) { }
 }

@@ -78,7 +78,7 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         if (isInCraftingGrid)
         {
             // CASE A: From Crafting Table -> Inventory
-            // AddItem generalmente devuelve el sobrante, se asume que si devuelve true, entró todo.
+            // AddItem generally returns the remainder, it is assumed that if it returns true, everything fit.
             if (invManager.AddItem(slot.item, slot.stackSize))
             {
                 slot.ClearSlot();
