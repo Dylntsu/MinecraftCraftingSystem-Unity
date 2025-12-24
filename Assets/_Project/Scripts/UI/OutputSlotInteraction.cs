@@ -5,8 +5,9 @@ public class OutputSlotInteraction : SlotInteraction
 {
     private CraftingManager craftingManager;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         craftingManager = FindFirstObjectByType<CraftingManager>();
     }
 
