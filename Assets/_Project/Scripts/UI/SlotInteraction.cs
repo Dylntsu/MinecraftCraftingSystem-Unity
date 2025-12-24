@@ -173,6 +173,8 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         ui.UpdateSlotUI();
         NotifyCrafting();
+        
+        AudioManager.Instance.PlaySound(AudioManager.Instance.pickUpSound);
     }
 
     protected virtual void HandleDrop()
@@ -195,6 +197,7 @@ public class SlotInteraction : MonoBehaviour, IPointerDownHandler, IPointerUpHan
         }
         ui.UpdateSlotUI();
         NotifyCrafting();
+        AudioManager.Instance.PlaySound(AudioManager.Instance.dropSound);
     }
 
     protected void NotifyCrafting()

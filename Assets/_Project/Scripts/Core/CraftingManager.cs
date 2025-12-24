@@ -198,9 +198,10 @@ public class CraftingManager : MonoBehaviour
                 }
             }
         }
-        
+
         currentActiveRecipe = null;
         CheckForRecipes();
+        AudioManager.Instance.PlaySound(AudioManager.Instance.craftSuccessSound);
     }
 
     private void UpdateOutputSlot()
