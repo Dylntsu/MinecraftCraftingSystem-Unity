@@ -1,8 +1,9 @@
 # ⛏️ Minecraft Crafting System: Backend & UI Challenge
 
-![Unity](https://img.shields.io/badge/Unity-2025%2B-black?style=for-the-badge&logo=unity)
+![Unity](https://img.shields.io/badge/Unity-2022%2B-black?style=for-the-badge&logo=unity)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp)
-![Status](https://img.shields.io/badge/Status-In_Progress-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Polished_&_Ready-success?style=for-the-badge)
+![Build](https://img.shields.io/badge/Build-WebGL-blue?style=for-the-badge)
 
 ---
 
@@ -11,11 +12,11 @@
 The primary objective is to replicate the logic and interface of the inventory, stacking, and crafting mechanics from *Minecraft*. This challenge focuses on **system architecture**, **clean code principles (SOLID)**, and **decoupling data from presentation** using the **Model-View-Controller (MVC)** pattern.
 
 ### ⚙️ Technologies & Concepts Applied
-* **Engine:** Unity (2026.6000.2.14f1 / URP 2D)
+* **Engine:** Unity (URP 2D)
 * **Language:** C#
 * **Data Structure:** ScriptableObjects (Item & Recipe Databases)
 * **Architecture:** Model-View-Controller (MVC) & Singleton Pattern
-* **Design Principles:** Single Responsibility Principle (SRP) & Open/Closed Principle (OCP)
+* **Design Principles:** Single Responsibility Principle (SRP), Open/Closed Principle (OCP) & Inheritance
 * **Version Control:** GitFlow (Atomic Commits)
 
 ---
@@ -27,34 +28,30 @@ The system is strictly decoupled into data, logic, and presentation layers:
 ### 1. The Model (Data)
 * **`ItemData.cs` (ScriptableObject):** Defines static properties (ID, `maxStackSize`, icon). Acts as the item database.
 * **`InventorySlot.cs`:** A serializable C# class representing a container space (Item reference + Count).
-* **✨ `CraftingRecipe.cs` (ScriptableObject):** Upgraded to support two crafting modes:
-    * **Shapeless:** List of ingredients (`shapelessIngredients`) where order is irrelevant.
-    * **Shaped:** A 3x3 Grid definition (`shapedGrid`) representing the required pattern.
-* **`RequiredItem.cs`:** Serializable helper class for defining recipe ingredients.
+* **`CraftingRecipe.cs` (ScriptableObject):** Supports two crafting modes (Shapeless & Shaped/Grid-based).
 
 ### 2. The Controller (Logic)
 * **`InventoryManager.cs`:** The central brain for storage. Handles `AddItem()`, stacking logic, and overflow checks.
-* **✨ `CraftingManager.cs`:** The crafting brain. Features:
-    * **Hybrid Validation:** Automatically detects if a recipe is Shapeless or Shaped.
-    * **Relative Pattern Matching:** Uses a "Bounding Box" algorithm to detect shaped recipes regardless of their position in the grid (e.g., a 2x1 pattern works in any column).
-    * **Consumption Logic:** Safely removes materials from the grid upon crafting.
-* **✨ `CraftingGridManager.cs`:** Responsible solely for holding references to the 9 input slots and providing them to the Manager.
-* **✨ `DragManager.cs` (Singleton):** Manages the global state of the "hand" (cursor), holding item data while dragging between slots.
+* **`CraftingManager.cs`:** Features hybrid validation, relative pattern matching (Bounding Box), and safe ingredient consumption.
+* **`DragManager.cs` (Singleton):** Manages the global state of the "hand" (cursor), holding item data while dragging between slots.
+* **✨ `AudioManager.cs` (Singleton):** Centralized audio system handling feedback for clicks, drops, and crafting success without coupling logic to UI.
+* **✨ `CreativePanelManager.cs`:** Dynamic logic that populates a scrollable list of all `ItemData` assets found in the project for debugging/testing.
 
 ### 3. Interaction & Input (The "Glue")
-* **✨ `SlotInteraction.cs`:** Handles Pointer events (Click, Drag, Drop). Implements standard inventory behavior (Left Click to take all, Right Click to split stack).
-* **✨ `OutputSlotInteraction.cs`:** A specialized subclass (Polymorphism/OCP) that overrides interaction logic specifically for the crafting result slot (e.g., prohibits placing items, handles crafting consumption on pickup).
+* **`SlotInteraction.cs`:** Handles Pointer events. Now includes **Procedural Animations** (Scale Hover) and **Drag Painting** logic.
+* **`OutputSlotInteraction.cs`:** Overrides interaction logic to handle "Craft-All" (Shift-Click) and continuous manual crafting (Spam-Click protection).
+* **✨ `CreativeSlot.cs`:** Inherits from `SlotInteraction` but overrides behavior to dispense infinite item stacks instead of swapping.
 
 ### 4. The View (UI)
-* **`InventoryUI.cs`:** Dynamically generates the slot grid and syncs visual state with data.
-* **`SlotUI.cs`:** Renders the Sprite and Quantity text.
-* **✨ `DragVisual.cs`:** Follows the mouse cursor, rendering the item currently being dragged.
+* **`InventoryUI.cs` & `SlotUI.cs`:** Dynamically generates the grid and syncs visual state.
+* **✨ `DragVisual.cs`:** Follows the mouse cursor, rendering the item stack with smooth positioning.
+* **✨ `HotbarUI.cs`:** Implements a smart **Highlighter Frame** that visually travels to the active slot.
 
 ---
 
 ## 📸 Visual Progress
 
-https://github.com/user-attachments/assets/b1f22839-c276-460b-817f-6ad8c7c9e5ed
+https://github.com/user-attachments/assets/1b6134e1-113f-4f43-a0db-cff48f8aea82
 
 ---
 
@@ -63,26 +60,35 @@ https://github.com/user-attachments/assets/b1f22839-c276-460b-817f-6ad8c7c9e5ed
 ### ✅ Inventory Fundamentals
 - [x] **Data Structure:** Separated `ItemData` vs `InventorySlot`.
 - [x] **Stacking Logic:** Items automatically stack up to their `maxStackSize`.
-- [x] **Overflow Handling:** Returns `false` if inventory is full.
+- [x] **Shift-Click Shortcuts:** Instantly move items between Inventory, Hotbar, and Crafting Grid (Smart stacking).
 
-### ✅ Drag & Drop System
+### ✅ Drag & Drop System (Advanced)
 - [x] **Visual Feedback:** Item icon follows the mouse cursor.
-- [x] **Swapping:** Items swap places if dropped on occupied slots.
+- [x] **Drag Painting:** Holding left click and dragging across slots distributes items evenly (1 per slot).
 - [x] **Splitting:** Right-click splits stacks in half.
-- [x] **Stack Accumulation:** Dropping same-type items merges their stacks.
+- [x] **Double-Click Collect:** (Planned) Gather all items of the same type.
 
-### ✅ Crafting System (Advanced)
-- [x] **3x3 Grid:** Fully functional crafting table UI.
-- [x] **Shapeless Crafting:** Works for unordered recipes (e.g., 1 Log -> 4 Planks).
-- [x] **Shaped Crafting:** Works for specific patterns (e.g., Pickaxe).
-- [x] **Relative Positioning:** Patterns are detected anywhere in the grid (e.g., a 2-vertical stick recipe works in the left, center, or right column).
-- [x] **Output Slot Logic:** - Preview appears automatically.
-    - Taking the item consumes ingredients.
-    - Support for "Spam-Clicking" to craft multiple times rapidly.
-    - "Ghost Item" prevention (Diamond doesn't appear on empty tables).
+### ✅ Crafting System
+- [x] **3x3 Grid:** Relative positioning (2x1 stick recipe works in any column).
+- [x] **Shapeless & Shaped:** Full support for both recipe types.
+- [x] **Output Logic:** - **Spam-Clicking:** Rapidly craft items one by one without drag glitches.
+    - **Shift-Click Craft All:** Instantly crafts the maximum possible amount based on available ingredients.
+    - **Ghost Item Prevention:** Output clears correctly when ingredients are removed.
+
+### ✅ UX & "Game Feel" (Juice)
+- [x] **Procedural Animation:** Slots scale up (1.1x) smoothly on Hover.
+- [x] **Audio Feedback:** Satisfying clicks, pops, and success sounds for every interaction.
+- [x] **Visual Highlighter:** A selection frame that snaps to the slot being interacted with.
+- [x] **Feedback Loops:** Visual shake/red tint (Planned) for invalid actions.
+
+### ✅ Developer Tools
+- [x] **Creative Mode:** A toggleable "Supply Chest" panel.
+- [x] **Infinite Scrolling:** Dynamically loads every ItemData in the database for easy testing.
+- [x] **WebGL Support:** optimized build settings for browser play.
 
 ---
 
-## 🚀 Next Steps (Roadmap)
-- [ ] **Shift-Click Shortcuts:** Move items instantly between Inventory and Hotbar/Grid.
-- [ ] **Tooltips:** Hover information for items.
+## 🚀 Roadmap & Next Steps
+- [ ] **Save/Load System:** JSON serialization for inventory state.
+- [ ] **Tooltips:** Hover information displaying Item Name and Description.
+- [ ] **Item Durability:** Extension of `ItemData` for tools.
